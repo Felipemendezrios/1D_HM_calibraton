@@ -3,7 +3,7 @@
 ###############################################################################################
 #                                                                                             #   
 # Main author:   Felipe Alberto MENDEZ RIOS                                                   #
-# Institute:     INRAE Lyon-Grenoble, UR RiverLy, France                                      #
+# Institute:     INRAE Lyon UR RiverLy, France                                                #
 # Year:          2023                                                                         #
 # version:       v.1.0.0                                                                      #
 #                                                                                             #
@@ -99,13 +99,41 @@ case_study_name <- all_case_studies[ as.numeric(
 #case_study_name = "Seine_aval"     
 ##########################################################################
 
+##############################################################################################
+#                            SOURCE ALL FUNCTIONS AVAILABLE TO CALCUL                        #
+##############################################################################################   
+source(paste0(dir.modules,"/Functions.R"))
+
+dir.case_study =  paste0(dir_code,"/Case_studies/", case_study_name)  # Read folder with the case study. 
+
+##############################################################################################
+#                            READ INPUTS DATA FOR THE CASE STUDY                             #
+##############################################################################################           
+# Read all input data and options
+source(paste0(dir.modules,"/module_read_input.R"))
 
 
 ##############################################################################################
-#                            READ GENERAL INPUTS FOR THE CASE STUDY                          #
-##############################################################################################           
-# Read all input data and options:
-# IMPORTANT:
-# Please, make sure that the configuration file with the general settings "Options_General.r" 
-# is correctly configured and located in the case-study folder.                   
-source(paste0(dir.modules,"/module_read_input.R"))
+#                             1) SEGMENTATION OF GAUGINGS                                    #
+##############################################################################################
+# Author: Matteo Darienzo, Inrae
+# Last update: 15/02/2021
+# Objective: detection of ruptures in the time series of residuals between gaugings and base RC
+# Procedure: 
+# - 1) Estimation of RC0 (rating curve of reference with quantitative uncertainty)
+# - 2) Computation of residuals between gaugings and RC0
+# - 3) Segmentation of the residuals time series (call of Bam-segmentation)
+# - 4) Adjustment of detected shift times and determination of sub-periods
+# - 5) Iterative re-estimation of RC0 and re-segmentation of residuals (steps 1-4) 
+#      for each sub-period
+# For a detailed description of each step see Darienzo et al., 2021.
+# Please, be sure to have completely filled the input files in the case study folder:
+# - "Options_Segment_gauging.R"
+# - "Options_General.R"
+# - "Options_BaRatinSPD.R" (for estimating multiperiod RC with the results of segmentation)
+###############################################################################################
+dir.segment.g        =  paste0(dir.case_study,"/Results/segmentation_gaugings")
+file.options.general =  paste0(dir.case_study,"/Options_General.R")
+file.options.segment =  paste0(dir.case_study, "/Options_Segment_gaugings.R")
+file.options.SPD     =  paste0(dir.case_study,"/Options_BaRatinSPD.R")
+dir.create(dir.segment.g)
