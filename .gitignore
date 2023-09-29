@@ -1,0 +1,7 @@
+# R projects file 
+*.Rproj.user
+*.Rhistory
+
+# Executables
+*.exe
+
